@@ -1,0 +1,95 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0 auto;
+    min-width: 95vw;
+    min-height: 100vh;
+    background: no-repeat linear-gradient(to right, rgb(37, 162, 219), darkblue);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    color: whitesmoke;
+    text-align: center;
+    margin: 0.8rem;
+}
+
+main {
+    min-width: 90vw;
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+}
+
+main section {
+    flex: 0 0 15vw;
+    width: 15vw;
+    margin: 0 1rem 1rem 1rem;
+    text-align: center;
+}
+
+section h2 {
+    padding: 0.5rem;
+}
+
+section ul {
+    list-style: none;
+    margin-top: 0.8rem;
+    border-top: 1px solid black;
+}
+
+section li {
+    margin: 0.8rem 0;
+    padding: 0.8rem 0;
+    width: 100%;
+    background-color: rgb(214, 214, 214);
+    border-radius: 0.3rem;
+}
+
+section input {
+    display: block;
+    height: 2rem;
+    width: 100%;
+    border-radius: 0.3rem;
+}
+
+section input[type="text"] {
+    border: 1px solid rgba(139, 139, 139, 0.2);
+}
+
+section input[type="submit"] {
+    border: 0;
+    margin-top: 0.3rem;
+}
+
+output {
+    width: 75%;
+}
+
+output #city-today,
+output #city-forecast {
+    height: 30%;
+    margin: 0.5rem;
+    padding: 0.4rem;
+}
+
+#city-today {
+    border: 1px solid black;
+}
+
+.card {
+    display: inline-block;
+    background-color: rgb(63, 71, 78);
+    color: white;
+    min-height: 80%;
+    width: 15%;
+}
+
+.card span {
+    line-height: 2em;
+    font-size: xx-large;
+}
