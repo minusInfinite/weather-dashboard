@@ -4,14 +4,8 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons-wind.min.css"
-        />
+        <link rel="stylesheet" href="./assets/css/weather-icons-wind.min.css" />
+        <link rel="stylesheet" href="./assets/css/weather-icons.min.css" />
         <link rel="stylesheet" href="./assets/css/styles.css" />
         <title>Weather Dashboard</title>
     </head>
@@ -23,8 +17,10 @@
         <main>
             <section id="search">
                 <h2>Search for a City</h2>
-                <input type="text" />
-                <input type="submit" value="Search" />
+                <form autocomplete="off">
+                    <input id="city-search" type="text" />
+                    <input id="search-button" type="submit" value="Search" />
+                </form>
                 <ul id="history">
                     <li>Adelaide</li>
                     <li>Melbourne</li>
@@ -61,5 +57,6 @@
             </output>
         </main>
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
     <script src="./assets/js/script.js"></script>
 </html>
