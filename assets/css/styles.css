@@ -78,7 +78,7 @@ output {
 
 output #city-today,
 output #city-forecast {
-    height: 30%;
+    height: 40%;
     margin: 0.5rem;
     padding: 0.4rem;
 }
@@ -87,10 +87,32 @@ output #city-forecast {
     border: 1px solid black;
 }
 
+#city-today h1 {
+    font-size: 2.5rem;
+    padding-left: 0.5rem;
+}
+
+#city-today h1 i {
+    font-size: 2.5rem;
+}
+
+#city-today p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-left: 0.5rem;
+    padding-top: 1rem;
+}
+
+#city-today p i {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
 .card {
     display: inline-block;
     background-color: rgb(63, 71, 78);
     color: white;
+    margin-right: 0.8rem;
     min-height: 80%;
     width: 15%;
 }
@@ -98,4 +120,9 @@ output #city-forecast {
 .card span {
     line-height: 2em;
     font-size: xx-large;
+}
+
+.error {
+    background-color: rgb(248, 170, 170);
+    color: rgb(53, 0, 0);
 }
