@@ -1,26 +1,63 @@
 {
-    /** @type {HTMLInputElement} */
+    //HTML Selectors
     const cityInput = document.querySelector("#city-search")
-    /** @type {HTMLInputElement} */
     const citySearch = document.querySelector("#search-button")
+    const searchHistory = document.querySelector("#history")
+    const dayCardContainer = document.querySelector(".card-container")
+
+    //Date Time Objects
     luxon.Settings.defaultZone.name = "utc"
     luxon.Settings.defaultLocale = "system"
     const dt = luxon.DateTime
 
+    //global variables
     const baseUrl = "https://api.openweathermap.org/data/2.5/"
     const forcastDay = "weather?q="
     const forcastWeek = "onecall?"
     const appID = "&appID=16f5ff504568dd6d7af2188b02db3453"
     const units = "&units=metric"
 
-    /**
-     * Get Forcast by City
-     * @param {string} city
-     * @returns {Promise<any>}
-     * @throws {string}
-     */
+    const savedCities = localStorage.getItem("cities") || "[]"
+    const citySeached = []
+    citySeached.push(...JSON.parse(savedCities))
+
+    //city object
+    const city = {
+        name: "",
+        date: 0,
+        iconid: 0,
+        lat: 0,
+        long: 0,
+        humidity: 0,
+        uvi: 0,
+        temp: {
+            current: 0,
+            feels_like: 0,
+            min: 0,
+            max: 0,
+        },
+        wind: {
+            speed: 0,
+            deg: 0,
+        },
+        rise: 0,
+        sunrise: function () {
+            return dt.fromSeconds(this.rise).toLocal()
+        },
+        set: 0,
+        sunset: function () {
+            return dt.fromSeconds(this.set).toLocal()
+        },
+        formatDate: function () {
+            return dt.fromSeconds(this.date).toLocal()
+        },
+    }
+
+    /* Get Forcast by City */
     const getForcast = async (city) => {
-        let result = fetch(`${baseUrl}${forcastDay}${city}${appID}${units}`)
+        let result = fetch(`${baseUrl}${forcastDay}${city}${appID}${units}`, {
+            cache: "reload",
+        })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(`City not found`)
@@ -31,16 +68,10 @@
         return await result
     }
 
-    /**
-     * Get 5-Day Forcast and UV Index
-     * @param {number} lat
-     * @param {number} long
-     * @returns {Promise<any>}
-     * @throws {string}
-     */
+    /* Get 5-Day Forcast and UV Index*/
     const getWeekly = async (lat, long) => {
         let result = fetch(
-            `${baseUrl}${forcastWeek}&lat=${lat}&long=${long}&exclude=mintely,hourly,alerts${appID}${units}`
+            `${baseUrl}${forcastWeek}&lat=${lat}&lon=${long}&exclude=minutely,hourly,alerts${appID}${units}`
         )
             .then((res) => {
                 if (!res.ok) {
@@ -52,14 +83,7 @@
         return await result
     }
 
-    /**
-     * Create a DOMString
-     * @param {string} tagName
-     * @param {string} elText
-     * @param {string} cssString
-     * @param {Array<string>} elAttr
-     * @returns {HTMLElement}
-     */
+    /* Create a DOMString */
     function buildEl(tagName, elText, cssString, elAttr) {
         let el = document.createElement(tagName)
         el.className = cssString || ""
@@ -73,58 +97,156 @@
         return el
     }
 
-    /**
-     *
-     * @param {*} name
-     * @param {number} seconds
-     * @param {number} sunset
-     * @param {*} id
-     * @param {*} temp
-     * @param {*} windSpeed
-     * @param {*} windDeg
-     * @param {*} humidity
-     */
-    function displayForcast(
-        name,
-        seconds,
-        sunset,
-        id,
-        temp,
-        windSpeed,
-        windDeg,
-        humidity
-    ) {
+    //generate Forcast and 5-day Forcast outputs
+    function displayForcast() {
         const dayEl = document.querySelector("#city-today")
         dayEl.textContent = ""
         let icon = ""
-        let forcastDate = dt
-            .fromSeconds(seconds)
-            .toLocal()
-            .toLocaleString(dt.DATE_SHORT)
-        if (dt.fromSeconds(seconds).toLocal().hour >= sunset) {
-            icon = `wi wi-owm-night-${id}`
+        let uvClass = ""
+        let forcasedt = city.formatDate().toLocaleString(dt.DATE_SHORT)
+        if (
+            city.formatDate().hour <= city.sunrise().hour ||
+            city.formatDate().hour >= city.sunset().hour
+        ) {
+            icon = `wi wi-owm-day-${city.iconid}`
         }
-        icon = `wi wi-owm-day-${id}`
+        icon = `wi wi-owm-night-${city.iconid}`
         dayEl.appendChild(
-            buildEl("h1", `${name} (${forcastDate}) `, "", [`id ${name}`])
+            buildEl("h1", `${city.name} (${forcasedt}) `, "", [
+                `id ${city.name}`,
+            ])
         )
-        dayEl.appendChild(buildEl("p", `Temp: ${temp}°C`, "", []))
         dayEl.appendChild(
-            buildEl("p", `Wind: ${windSpeed} m/s `, "", ["id wind"])
+            buildEl(
+                "p",
+                `Current Temp: ${city.temp.current}°C \n Feels Like: ${city.temp.feels_like}°C\n Min: ${city.temp.min}°C\n Max: ${city.temp.current}°C`,
+                "",
+                []
+            )
         )
-        dayEl.appendChild(buildEl("p", `Humidity: ${humidity} %`, "", []))
-        dayEl.appendChild(buildEl("p", `UV Index:`, "", []))
+        dayEl.appendChild(
+            buildEl("p", `Wind: ${city.wind.speed} m/s `, "", ["id wind"])
+        )
+        dayEl.appendChild(buildEl("p", `Humidity: ${city.humidity} %`, "", []))
+        dayEl.appendChild(buildEl("p", `UV Index: `, "", ["id uvi"]))
+
+        if (city.uvi >= 11) {
+            uvClass = "uv uv_extreme"
+        }
+        if (city.uvi >= 8 || city.uvi < 10) {
+            uvClass = "uv uv_vhigh"
+        }
+        if (city.uvi >= 6 || city.uvi < 7) {
+            uvClass = "uv uv_high"
+        }
+        if (city.uvi >= 3 || city.uvi < 5) {
+            uvClass = "uv uv_moderate"
+        }
+        if (city.uvi >= 1 || city.uvi < 2) {
+            uvClass = "uv uv_low"
+        }
 
         document
             .querySelector("#wind")
             .appendChild(
-                buildEl("i", " ", `wi wi-wind towards-${windDeg}-deg`, [])
+                buildEl("i", " ", `wi wi-wind towards-${city.wind.deg}-deg`, [])
             )
         document
-            .querySelector(`#${name}`)
+            .querySelector(`#${city.name}`)
             .appendChild(buildEl("i", " ", icon, []))
+        document
+            .querySelector("#uvi")
+            .appendChild(buildEl("span", `${city.uvi}`, uvClass, []))
     }
 
+    //building the list of past searches
+    function makeHistoryList() {
+        if (citySeached.length > 0) {
+            for (var i = 0; i < citySeached.length; i++) {
+                searchHistory.appendChild(
+                    buildEl("li", citySeached[i].name, "", [
+                        `data-city ${citySeached[i].name}`,
+                        `data-lat ${citySeached[i].lat}`,
+                        `data-long ${citySeached[i].long}`,
+                    ])
+                )
+            }
+        }
+    }
+
+    //Collect and process the API data
+    function processData(_e) {
+        dayCardContainer.textContent = ""
+
+        getForcast(cityInput.value).then((df) => {
+            if (df.message) {
+                cityInput.value = ""
+                cityInput.placeholder = df.message
+                cityInput.classList.add("error")
+            }
+
+            city.lat = df.coord.lat
+            city.long = df.coord.lon
+            city.name = df.name
+            city.date = df.dt
+            city.set = df.sys.sunset
+            city.rise = df.sys.sunrise
+            city.iconid = df.weather[0].id
+            city.temp.current = df.main.temp
+            city.temp.feels_like = df.main.feels_like
+            city.temp.min = df.main.temp_min
+            city.temp.max = df.main.temp_max
+            city.humidity = df.main.humidity
+            city.wind.speed = df.wind.speed
+            city.wind.windDeg = df.wind.deg
+
+            if (!JSON.stringify(citySeached).includes(city.name)) {
+                citySeached.push(...JSON.parse(savedCities), {
+                    name: city.name,
+                    lat: city.lat,
+                    long: city.long,
+                })
+                localStorage.setItem("cities", JSON.stringify(citySeached))
+                searchHistory.appendChild(
+                    buildEl("li", city.name, "", [
+                        `data-city ${city.name}`,
+                        `data-lat ${city.lat}`,
+                        `data-long ${city.long}`,
+                    ])
+                )
+            }
+
+            cityInput.value = ""
+            getWeekly(city.lat, city.long).then((dw) => {
+                city.uvi = dw.current.uvi
+                console.log(dw.current.uvi)
+                for (let i = 1; i < 6; i++) {
+                    let card = document.createElement("div")
+                    let date = dt
+                        .fromSeconds(dw.daily[i].dt)
+                        .toLocal()
+                        .toLocaleString(dt.DATE_SHORT)
+                    let icon = `wi wi-owm-${dw.daily[i].weather[0].id}`
+                    let temp = `Temp: ${dw.daily[i].temp.max}`
+                    let wind = `Wind: ${dw.daily[i].wind_speed} m/s`
+                    let humidity = `Humidity: ${dw.daily[i].humidity}%`
+
+                    card.classList.add("card")
+
+                    card.appendChild(buildEl("h2", date, "", []))
+                    card.appendChild(buildEl("h2", "", icon, []))
+                    card.appendChild(buildEl("p", temp, "", []))
+                    card.appendChild(buildEl("p", wind, "", []))
+                    card.appendChild(buildEl("p", humidity, "", []))
+
+                    dayCardContainer.appendChild(card)
+                }
+                displayForcast()
+            })
+        })
+    }
+
+    //event listener to clear the place holder and error display
     cityInput.addEventListener("focus", (e) => {
         if (cityInput.classList.contains("error")) {
             cityInput.classList.remove("error")
@@ -132,53 +254,30 @@
         }
     })
 
+    //event listener when search button is clicked
     citySearch.addEventListener("click", (e) => {
         e.preventDefault()
-
-        const searchHistory = document.querySelector("#history")
-
         if (cityInput.value.trim() === "") {
             cityInput.value = ""
             cityInput.placeholder = "Input can't be empty"
             cityInput.classList.add("error")
+        } else if (citySeached.toString().includes(cityInput.value)) {
+            cityInput.value = ""
+            cityInput.placeholder = "City in Search History"
+            cityInput.classList.add("error")
         } else {
-            getForcast(cityInput.value).then((df) => {
-                if (df.message) {
-                    cityInput.value = ""
-                    cityInput.placeholder = df.message
-                    cityInput.classList.add("error")
-                }
-
-                let lat = df.coord.lat
-                let long = df.coord.lon
-                let name = df.name
-                let seconds = df.dt
-                let sunset = dt.fromSeconds(df.sys.sunset).toLocal().hour
-                let weatherId = df.weather[0].id
-                let temp = df.main.temp
-                let humidity = df.main.humidity
-                let windSpeed = df.wind.speed
-                let windDeg = df.wind.deg
-                searchHistory.appendChild(
-                    buildEl("li", name, "", [
-                        `data-city ${name}`,
-                        `data-lat ${lat}`,
-                        `data-long ${long}`,
-                    ])
-                )
-
-                cityInput.value = ""
-                displayForcast(
-                    name,
-                    seconds,
-                    sunset,
-                    weatherId,
-                    temp,
-                    windSpeed,
-                    windDeg,
-                    humidity
-                )
-            })
+            processData(e)
         }
     })
+
+    //event listener for Seach History Items
+    searchHistory.addEventListener("click", (e) => {
+        e.stopPropagation()
+        let element = e.target
+        if (element.localName === "li" && element.hasAttribute("data-lat")) {
+            cityInput.value = element.getAttribute("data-city")
+            processData(e)
+        }
+    })
+    makeHistoryList()
 }
