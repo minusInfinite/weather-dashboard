@@ -104,18 +104,23 @@
         let icon = ""
         let uvClass = ""
         let forcasedt = city.formatDate().toLocaleString(dt.DATE_SHORT)
+
         if (
-            city.formatDate().hour <= city.sunrise().hour ||
-            city.formatDate().hour >= city.sunset().hour
+            city.formatDate().hour >= city.sunrise().hour &&
+            city.formatDate().hour <= city.sunset().hour
         ) {
             icon = `wi wi-owm-day-${city.iconid}`
+        } else {
+            icon = `wi wi-owm-night-${city.iconid}`
         }
-        icon = `wi wi-owm-night-${city.iconid}`
 
         dayEl.appendChild(
-            buildEl("h1", `${city.name} (${forcasedt}) `, "", [
-                `id ${city.name}`,
-            ])
+            buildEl(
+                "h1",
+                `${city.name.replace("-", " ")} (${forcasedt}) `,
+                "",
+                [`id ${city.name}`]
+            )
         )
         dayEl.appendChild(
             buildEl(
@@ -133,7 +138,7 @@
 
         uvRound = Math.round(city.uvi)
 
-        if (uvRound >= 1 && uvRound < 2) {
+        if (uvRound <= 2) {
             uvClass = "uv uv_low"
         }
         if (uvRound >= 3 && uvRound < 5) {
@@ -242,16 +247,13 @@
                     card.classList.add("card")
 
                     card.appendChild(buildEl("h2", date, "", []))
-                    card.appendChild(buildEl("h2", "", icon, []))
+                    card.appendChild(buildEl("i", "", icon, []))
                     card.appendChild(buildEl("p", temp, "", []))
                     card.appendChild(buildEl("p", wind, "", []))
                     card.appendChild(buildEl("p", humidity, "", []))
 
                     dayCardContainer.appendChild(card)
                 }
-                console.log(
-                    `API UVI: ${dw.current.uvi}\n Saved UVI:${city.uvi}`
-                )
                 displayForcast()
             })
         })
