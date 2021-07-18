@@ -111,6 +111,7 @@
             icon = `wi wi-owm-day-${city.iconid}`
         }
         icon = `wi wi-owm-night-${city.iconid}`
+
         dayEl.appendChild(
             buildEl("h1", `${city.name} (${forcasedt}) `, "", [
                 `id ${city.name}`,
@@ -130,20 +131,22 @@
         dayEl.appendChild(buildEl("p", `Humidity: ${city.humidity} %`, "", []))
         dayEl.appendChild(buildEl("p", `UV Index: `, "", ["id uvi"]))
 
-        if (city.uvi >= 11) {
-            uvClass = "uv uv_extreme"
+        uvRound = Math.round(city.uvi)
+
+        if (uvRound >= 1 && uvRound < 2) {
+            uvClass = "uv uv_low"
         }
-        if (city.uvi >= 8 || city.uvi < 10) {
-            uvClass = "uv uv_vhigh"
-        }
-        if (city.uvi >= 6 || city.uvi < 7) {
-            uvClass = "uv uv_high"
-        }
-        if (city.uvi >= 3 || city.uvi < 5) {
+        if (uvRound >= 3 && uvRound < 5) {
             uvClass = "uv uv_moderate"
         }
-        if (city.uvi >= 1 || city.uvi < 2) {
-            uvClass = "uv uv_low"
+        if (uvRound >= 6 && uvRound < 7) {
+            uvClass = "uv uv_high"
+        }
+        if (uvRound >= 8 && uvRound < 10) {
+            uvClass = "uv uv_vhigh"
+        }
+        if (uvRound >= 11) {
+            uvClass = "uv uv_extreme"
         }
 
         document
@@ -163,22 +166,28 @@
     function makeHistoryList() {
         if (citySeached.length > 0) {
             for (var i = 0; i < citySeached.length; i++) {
+                name
                 searchHistory.appendChild(
-                    buildEl("li", citySeached[i].name, "", [
-                        `data-city ${citySeached[i].name}`,
-                        `data-lat ${citySeached[i].lat}`,
-                        `data-long ${citySeached[i].long}`,
-                    ])
+                    buildEl(
+                        "li",
+                        `${citySeached[i].name.replace("-", " ")}`,
+                        "",
+                        [
+                            `data-city ${citySeached[i].name}`,
+                            `data-lat ${citySeached[i].lat}`,
+                            `data-long ${citySeached[i].long}`,
+                        ]
+                    )
                 )
             }
         }
     }
 
     //Collect and process the API data
-    function processData(_e) {
+    function processData(value) {
         dayCardContainer.textContent = ""
 
-        getForcast(cityInput.value).then((df) => {
+        getForcast(value).then((df) => {
             if (df.message) {
                 cityInput.value = ""
                 cityInput.placeholder = df.message
@@ -187,7 +196,7 @@
 
             city.lat = df.coord.lat
             city.long = df.coord.lon
-            city.name = df.name
+            city.name = df.name.replace(" ", "-")
             city.date = df.dt
             city.set = df.sys.sunset
             city.rise = df.sys.sunrise
@@ -208,7 +217,7 @@
                 })
                 localStorage.setItem("cities", JSON.stringify(citySeached))
                 searchHistory.appendChild(
-                    buildEl("li", city.name, "", [
+                    buildEl("li", city.name.replace("-", " "), "", [
                         `data-city ${city.name}`,
                         `data-lat ${city.lat}`,
                         `data-long ${city.long}`,
@@ -219,7 +228,6 @@
             cityInput.value = ""
             getWeekly(city.lat, city.long).then((dw) => {
                 city.uvi = dw.current.uvi
-                console.log(dw.current.uvi)
                 for (let i = 1; i < 6; i++) {
                     let card = document.createElement("div")
                     let date = dt
@@ -241,6 +249,9 @@
 
                     dayCardContainer.appendChild(card)
                 }
+                console.log(
+                    `API UVI: ${dw.current.uvi}\n Saved UVI:${city.uvi}`
+                )
                 displayForcast()
             })
         })
@@ -266,7 +277,7 @@
             cityInput.placeholder = "City in Search History"
             cityInput.classList.add("error")
         } else {
-            processData(e)
+            processData(cityInput.value)
         }
     })
 
@@ -275,8 +286,9 @@
         e.stopPropagation()
         let element = e.target
         if (element.localName === "li" && element.hasAttribute("data-lat")) {
-            cityInput.value = element.getAttribute("data-city")
-            processData(e)
+            data = element.getAttribute("data-city").replace("-", " ")
+            console.log(data)
+            processData(data)
         }
     })
     makeHistoryList()
