@@ -90,8 +90,8 @@
         el.textContent = elText || ""
         for (let i = 0; i < elAttr.length; i++) {
             el.setAttribute(
-                elAttr[i].toString().split(" ")[0],
-                elAttr[i].toString().split(" ")[1]
+                elAttr[i].toString().split("#")[0],
+                elAttr[i].toString().split("#")[1]
             )
         }
         return el
@@ -115,12 +115,9 @@
         }
 
         dayEl.appendChild(
-            buildEl(
-                "h1",
-                `${city.name.replace("-", " ")} (${forcasedt}) `,
-                "",
-                [`id ${city.name}`]
-            )
+            buildEl("h1", `${city.name} (${forcasedt}) `, "", [
+                `id#${city.name.replace(" ", "-")}`,
+            ])
         )
         dayEl.appendChild(
             buildEl(
@@ -131,23 +128,23 @@
             )
         )
         dayEl.appendChild(
-            buildEl("p", `Wind: ${city.wind.speed} m/s `, "", ["id wind"])
+            buildEl("p", `Wind: ${city.wind.speed} m/s `, "", ["id#wind"])
         )
         dayEl.appendChild(buildEl("p", `Humidity: ${city.humidity} %`, "", []))
-        dayEl.appendChild(buildEl("p", `UV Index: `, "", ["id uvi"]))
+        dayEl.appendChild(buildEl("p", `UV Index: `, "", ["id#uvi"]))
 
         uvRound = Math.round(city.uvi)
 
         if (uvRound <= 2) {
             uvClass = "uv uv_low"
         }
-        if (uvRound >= 3 && uvRound < 5) {
+        if (uvRound >= 3 && uvRound <= 5) {
             uvClass = "uv uv_moderate"
         }
-        if (uvRound >= 6 && uvRound < 7) {
+        if (uvRound >= 6 && uvRound <= 7) {
             uvClass = "uv uv_high"
         }
-        if (uvRound >= 8 && uvRound < 10) {
+        if (uvRound >= 8 && uvRound <= 10) {
             uvClass = "uv uv_vhigh"
         }
         if (uvRound >= 11) {
@@ -160,7 +157,7 @@
                 buildEl("i", " ", `wi wi-wind towards-${city.wind.deg}-deg`, [])
             )
         document
-            .querySelector(`#${city.name}`)
+            .querySelector(`#${city.name.replace(" ", "-")}`)
             .appendChild(buildEl("i", " ", icon, []))
         document
             .querySelector("#uvi")
@@ -171,18 +168,12 @@
     function makeHistoryList() {
         if (citySeached.length > 0) {
             for (var i = 0; i < citySeached.length; i++) {
-                name
                 searchHistory.appendChild(
-                    buildEl(
-                        "li",
-                        `${citySeached[i].name.replace("-", " ")}`,
-                        "",
-                        [
-                            `data-city ${citySeached[i].name}`,
-                            `data-lat ${citySeached[i].lat}`,
-                            `data-long ${citySeached[i].long}`,
-                        ]
-                    )
+                    buildEl("li", `${citySeached[i].name}`, "", [
+                        `data-city#${citySeached[i].name}`,
+                        `data-lat#${citySeached[i].lat}`,
+                        `data-long#${citySeached[i].long}`,
+                    ])
                 )
             }
         }
@@ -201,7 +192,7 @@
 
             city.lat = df.coord.lat
             city.long = df.coord.lon
-            city.name = df.name.replace(" ", "-")
+            city.name = df.name
             city.date = df.dt
             city.set = df.sys.sunset
             city.rise = df.sys.sunrise
@@ -222,10 +213,10 @@
                 })
                 localStorage.setItem("cities", JSON.stringify(citySeached))
                 searchHistory.appendChild(
-                    buildEl("li", city.name.replace("-", " "), "", [
-                        `data-city ${city.name}`,
-                        `data-lat ${city.lat}`,
-                        `data-long ${city.long}`,
+                    buildEl("li", city.name, "", [
+                        `data-city#${city.name}`,
+                        `data-lat#${city.lat}`,
+                        `data-long#${city.long}`,
                     ])
                 )
             }
@@ -288,7 +279,7 @@
         e.stopPropagation()
         let element = e.target
         if (element.localName === "li" && element.hasAttribute("data-lat")) {
-            data = element.getAttribute("data-city").replace("-", " ")
+            data = element.getAttribute("data-city")
             console.log(data)
             processData(data)
         }
