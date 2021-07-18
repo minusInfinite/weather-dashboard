@@ -66,6 +66,12 @@ section input[type="text"] {
 
 section input[type="submit"] {
     border: 1px solid rgba(0, 0, 0, 0);
+    background-color: rgb(0, 107, 139);
+    color: rgb(200, 237, 252);
+    text-shadow: 2px 1px 0 black;
+    font-size: 1.5rem;
+    font-weight: 600;
+    height: 3rem;
     margin-top: 0.3rem;
 }
 
@@ -174,7 +180,7 @@ output #city-forecast {
     border-radius: 5px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 550px) {
     .card-container {
         flex-direction: column;
     }
