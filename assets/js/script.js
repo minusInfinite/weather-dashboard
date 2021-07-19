@@ -22,7 +22,7 @@
     let appKey = localStorage.getItem("appKey")
         ? localStorage.getItem("appKey").replace("appKey-", "")
         : ""
-    let appID = (appKey.length > 0)`&appID=${appKey}` || ""
+    let appID = appKey.length > 0 ? `&appID=${appKey}` : ""
 
     const savedCities = localStorage.getItem("cities") || "[]"
     const citySeached = []
@@ -283,6 +283,10 @@
 
     modalBtn.onclick = function () {
         apiModalEl.style.display = "block"
+        const apiInput = document.querySelector("#api-input")
+        if (appKey.length > 0) {
+            apiInput.placeholder = appKey
+        }
     }
 
     modalClose.onclick = function () {
