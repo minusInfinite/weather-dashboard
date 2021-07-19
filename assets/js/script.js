@@ -140,21 +140,19 @@
         dayEl.appendChild(buildEl("p", `Humidity: ${city.humidity} %`, "", []))
         dayEl.appendChild(buildEl("p", `UV Index: `, "", ["id#uvi"]))
 
-        uvRound = Math.round(city.uvi)
-
-        if (uvRound <= 2) {
+        if (city.uvi <= 2.99) {
             uvClass = "uv uv_low"
         }
-        if (uvRound >= 3 && uvRound <= 5) {
+        if (city.uvi >= 3 && city.uvi < 5.99) {
             uvClass = "uv uv_moderate"
         }
-        if (uvRound >= 6 && uvRound <= 7) {
+        if (city.uvi >= 6 && city.uvi < 7.99) {
             uvClass = "uv uv_high"
         }
-        if (uvRound >= 8 && uvRound <= 10) {
+        if (city.uvi >= 8 && city.uvi < 10.99) {
             uvClass = "uv uv_vhigh"
         }
-        if (uvRound >= 11) {
+        if (city.uvi >= 11) {
             uvClass = "uv uv_extreme"
         }
 
