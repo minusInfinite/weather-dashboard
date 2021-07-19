@@ -22,7 +22,7 @@
     let appKey = localStorage.getItem("appKey")
         ? localStorage.getItem("appKey").replace("appKey-", "")
         : ""
-    let appID = `&appID=${appKey}`
+    let appID = (appkey.length > 0)`&appID=${appKey}` || ""
 
     const savedCities = localStorage.getItem("cities") || "[]"
     const citySeached = []
@@ -303,6 +303,7 @@
 
         const apiInput = document.querySelector("#api-input")
         appKey = apiInput.value.trim()
+        appID = `&appID=${appKey}`
 
         localStorage.setItem("appKey", `appKey-${appKey}`)
 
