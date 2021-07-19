@@ -90,6 +90,7 @@
         return await result
     }
 
+    // check the units
     let inDeg = ""
     if (units.includes("metric")) {
         inDeg = "°C"
