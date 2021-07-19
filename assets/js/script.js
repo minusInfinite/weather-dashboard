@@ -4,6 +4,10 @@
     const citySearch = document.querySelector("#search-button")
     const searchHistory = document.querySelector("#history")
     const dayCardContainer = document.querySelector(".card-container")
+    const modalBtn = document.querySelector("#modal-btn")
+    const modalClose = document.querySelector(".close")
+    const apiModalEl = document.querySelector("#api-modal")
+    const apiSubmitBtn = document.querySelector("#api-submit")
 
     //Date Time Objects
     luxon.Settings.defaultZone.name = "utc"
@@ -14,7 +18,8 @@
     const baseUrl = "https://api.openweathermap.org/data/2.5/"
     const forcastDay = "weather?q="
     const forcastWeek = "onecall?"
-    const appID = "&appID=16f5ff504568dd6d7af2188b02db3453"
+    let appKey = localStorage.getItem("appKey").replace("appKey-", "") || ""
+    let appID = `&appID=${appKey}`
     const units = "&units=metric"
 
     const savedCities = localStorage.getItem("cities") || "[]"
@@ -261,7 +266,11 @@
     //event listener when search button is clicked
     citySearch.addEventListener("click", (e) => {
         e.preventDefault()
-        if (cityInput.value.trim() === "") {
+        if (appKey == "") {
+            cityInput.value = ""
+            cityInput.placeholder = "Provide API Key to Continue"
+            cityInput.classList.add("error")
+        } else if (cityInput.value.trim() === "") {
             cityInput.value = ""
             cityInput.placeholder = "Input can't be empty"
             cityInput.classList.add("error")
@@ -272,6 +281,32 @@
         } else {
             processData(cityInput.value)
         }
+    })
+
+    modalBtn.onclick = function () {
+        apiModalEl.style.display = "block"
+    }
+
+    modalClose.onclick = function () {
+        apiModalEl.style.display = "none"
+    }
+
+    window.onclick = function (e) {
+        if (e.target == apiModalEl) {
+            apiModalEl.style.display = "none"
+        }
+    }
+
+    apiSubmitBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const apiInput = document.querySelector("#api-input")
+        appKey = apiInput.value.trim()
+
+        localStorage.setItem("appKey", `appKey-${appKey}`)
+
+        apiModalEl.style.display = "none"
     })
 
     //event listener for Seach History Items

@@ -13,6 +13,7 @@
     <body>
         <header>
             <h1>Weather Dashboard</h1>
+            <button id="modal-btn">Add API Key</button>
         </header>
         <main>
             <section id="search">
@@ -31,6 +32,18 @@
                 </div>
             </output>
         </main>
+        <div id="api-modal" class="modal">
+            <div class="modal-form">
+                <span class="close">&times;</span>
+                <h2>Provide API Key</h2>
+                <input
+                    type="text"
+                    id="api-input"
+                    placeholder="Enter your OpenWeatherMap API here"
+                />
+                <input type="submit" id="api-submit" />
+            </div>
+        </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
     <script src="./assets/js/script.js"></script>
