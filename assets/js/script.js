@@ -315,7 +315,6 @@
         let element = e.target
         if (element.localName === "li" && element.hasAttribute("data-lat")) {
             data = element.getAttribute("data-city")
-            console.log(data)
             processData(data)
         }
     })
