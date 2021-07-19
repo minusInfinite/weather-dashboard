@@ -21,7 +21,7 @@ header {
 header button {
     position: fixed;
     top: 2vh;
-    right: 5vw;
+    left: 1vw;
     background-color: darkblue;
     border: 1px solid white;
     border-radius: 3px;
@@ -72,7 +72,12 @@ section input {
 }
 
 section input[type="text"] {
-    border: 1px solid rgba(139, 139, 139, 0.2);
+    border: 1px solid rgba(139, 139, 139, 0.5);
+    padding: 0.5rem;
+}
+
+section input[type="text"]:focus {
+    border: 1px solid rgba(139, 139, 139);
     padding: 0.5rem;
 }
 

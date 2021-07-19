@@ -4,7 +4,9 @@ A Weather dashboard using Open Weather Map API
 Demo: https://minusinfinite.github.io/weather-dashboard/
 ![GIF Demo](https://imgur.com/8tiF3IH.gif)
 
-The API for this assignment was from "https://openweathermap.org/". Due to this being a front-end only assignment attempting to secure the API key was not an option, as such, I'll look to disable to API key shortly.
+The API for this assignment was from "https://openweathermap.org/". Due to this being a front-end only assignment attempting to secure the API key was not an option, as such, ~~I'll look to disable to API key shortly.~~
+
+A button as been added to the top left of the page for a user to provide their own API Key from https://openweathermap.org/
 
 For this assignment, we're provided with the following User Story
 
