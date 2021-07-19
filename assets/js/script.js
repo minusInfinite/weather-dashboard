@@ -90,6 +90,13 @@
         return await result
     }
 
+    let inDeg = ""
+    if (units.includes("metric")) {
+        inDeg = "°C"
+    } else if (units.includes("imperial")) {
+        inDeg = "°F"
+    } else inDeg = " K"
+
     /* Create a DOMString */
     function buildEl(tagName, elText, cssString, elAttr) {
         let el = document.createElement(tagName)
@@ -129,7 +136,7 @@
         dayEl.appendChild(
             buildEl(
                 "p",
-                `Current Temp: ${city.temp.current}°C \n Feels Like: ${city.temp.feels_like}°C\n Min: ${city.temp.min}°C\n Max: ${city.temp.current}°C`,
+                `Current Temp: ${city.temp.current}${inDeg}\n Feels Like: ${city.temp.feels_like}${inDeg}\n Min: ${city.temp.min}${inDeg}\n Max: ${city.temp.current}${inDeg}`,
                 "",
                 []
             )
@@ -236,7 +243,7 @@
                         .toLocal()
                         .toLocaleString(dt.DATE_SHORT)
                     let icon = `wi wi-owm-${dw.daily[i].weather[0].id}`
-                    let temp = `Temp: ${dw.daily[i].temp.max}`
+                    let temp = `Temp: ${dw.daily[i].temp.max}${inDeg}`
                     let wind = `Wind: ${dw.daily[i].wind_speed} m/s`
                     let humidity = `Humidity: ${dw.daily[i].humidity}%`
 
