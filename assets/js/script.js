@@ -18,9 +18,11 @@
     const baseUrl = "https://api.openweathermap.org/data/2.5/"
     const forcastDay = "weather?q="
     const forcastWeek = "onecall?"
-    let appKey = localStorage.getItem("appKey").replace("appKey-", "") || ""
-    let appID = `&appID=${appKey}`
     const units = "&units=metric"
+    let appKey = localStorage.getItem("appKey")
+        ? localStorage.getItem("appKey").replace("appKey-", "")
+        : ""
+    let appID = `&appID=${appKey}`
 
     const savedCities = localStorage.getItem("cities") || "[]"
     const citySeached = []
@@ -267,9 +269,7 @@
     citySearch.addEventListener("click", (e) => {
         e.preventDefault()
         if (appKey == "") {
-            cityInput.value = ""
-            cityInput.placeholder = "Provide API Key to Continue"
-            cityInput.classList.add("error")
+            apiModalEl.style.display = "block"
         } else if (cityInput.value.trim() === "") {
             cityInput.value = ""
             cityInput.placeholder = "Input can't be empty"
