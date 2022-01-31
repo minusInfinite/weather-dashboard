@@ -103,7 +103,6 @@ output {
 
 output #city-today,
 output #city-forecast {
-    height: 40%;
     margin: 0.5rem;
     padding: 0.4rem;
 }
