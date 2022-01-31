@@ -1,50 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./assets/css/weather-icons-wind.css" />
-        <link rel="stylesheet" href="./assets/css/weather-icons.css" />
-        <link rel="stylesheet" href="./assets/css/styles.css" />
-        <title>Weather Dashboard</title>
-    </head>
 
-    <body>
-        <header>
-            <h1>Weather Dashboard</h1>
-            <button id="modal-btn">Add API Key</button>
-        </header>
-        <main>
-            <section id="search">
-                <h2>Search for a City</h2>
-                <form autocomplete="off">
-                    <input id="city-search" type="text" />
-                    <input id="search-button" type="submit" value="Search" />
-                </form>
-                <ul id="history"></ul>
-            </section>
-            <output>
-                <div id="city-today"></div>
-                <div id="city-forecast">
-                    <h2>5-Day Forecast</h2>
-                    <div class="card-container"></div>
-                </div>
-            </output>
-        </main>
-        <div id="api-modal" class="modal">
-            <div class="modal-form">
-                <span class="close">&times;</span>
-                <h2>Provide API Key</h2>
-                <input
-                    type="text"
-                    id="api-input"
-                    placeholder="Enter your OpenWeatherMap API here"
-                />
-                <input type="submit" id="api-submit" />
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/weather-icons-wind.css" />
+    <link rel="stylesheet" href="./assets/css/weather-icons.css" />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <title>Weather Dashboard</title>
+</head>
+
+<body>
+    <header>
+        <h1>Weather Dashboard</h1>
+        <button id="modal-btn">API Key</button>
+    </header>
+    <main>
+        <section id="search">
+            <h2>Search for a City</h2>
+            <form autocomplete="off">
+                <input id="city-search" type="text" />
+                <input id="search-button" type="submit" value="Search" />
+            </form>
+            <ul id="history"></ul>
+        </section>
+        <output>
+            <div id="city-today"></div>
+            <div id="city-forecast">
+                <h2>5-Day Forecast</h2>
+                <div class="card-container"></div>
             </div>
+        </output>
+    </main>
+    <div id="api-modal" class="modal">
+        <div class="modal-form">
+            <span class="close">&times;</span>
+            <h2>Provide API Key</h2>
+            <input type="text" id="api-input" placeholder="Enter your OpenWeatherMap API here" />
+            <input type="submit" id="api-submit" />
         </div>
-    </body>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
-    <script src="./assets/js/script.js"></script>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
+<script src="./assets/js/script.js"></script>
+
 </html>
